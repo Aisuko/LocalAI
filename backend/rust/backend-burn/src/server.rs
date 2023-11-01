@@ -1,3 +1,7 @@
+pub(crate) mod models;
+pub(crate) mod pkg;
+pub(crate) mod utils;
+
 use std::net::SocketAddr;
 
 use bunker::pb::Result as PbResult;

@@ -52,3 +52,18 @@ make test
   "message": "T0s="
 }
 ```
+
+# Potential issues
+
+* [backend-toch Error loading shared libraries](https://github.com/LaurentMazare/tch-rs#error-loading-shared-libraries)
+
+```bash
+dyld[15803]: Library not loaded: @rpath/libtorch_cpu.dylib
+  Referenced from: <B583CD33-2743-323A-B503-5781B34C078F> /Users/tifa/Downloads/workspace/LocalAI/backend/rust/target/debug/deps/server-bc3eca19368e3b4a
+  Reason: no LC_RPATH's found
+```
+
+
+# Credit
+
+* [Llama2-burn](https://github.com/Gadersd/llama2-burn)
