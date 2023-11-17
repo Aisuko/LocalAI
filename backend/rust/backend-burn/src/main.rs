@@ -18,7 +18,7 @@ use tracing::{event, span, Level};
 use tracing_subscriber::filter::LevelParseError;
 
 use std::fs;
-use std::process::{Command,id};
+use std::process::{id, Command};
 
 use models::*;
 // implement BackendService trait in bunker
@@ -42,25 +42,7 @@ impl BackendService for BurnBackend {
 
     #[tracing::instrument]
     async fn predict(&self, request: Request<PredictOptions>) -> Result<Response<Reply>, Status> {
-        let mut models: Vec<Box<dyn LLM>> = vec![Box::new(models::MNINST::new())];
-        let result = models[0].predict(request.into_inner());
-
-        match result {
-            Ok(res) => {
-                let reply = Reply {
-                    message: res.into(),
-                };
-                let res = Response::new(reply);
-                Ok(res)
-            }
-            Err(e) => {
-                let reply = Reply {
-                    message: e.to_string().into(),
-                };
-                let res = Response::new(reply);
-                Ok(res)
-            }
-        }
+        todo!("predict")
     }
 
     #[tracing::instrument]
@@ -68,7 +50,7 @@ impl BackendService for BurnBackend {
         &self,
         request: Request<ModelOptions>,
     ) -> Result<Response<PbResult>, Status> {
-        todo!()
+        todo!("load model")
     }
 
     #[tracing::instrument]
@@ -121,35 +103,34 @@ impl BackendService for BurnBackend {
         &self,
         request: Request<HealthMessage>,
     ) -> Result<Response<StatusResponse>, Status> {
-        
         // Here we do not need to cover the windows platform
         let mut breakdown = HashMap::new();
-        let mut memory_usage: u64=0;
+        let mut memory_usage: u64 = 0;
 
         #[cfg(target_os = "linux")]
         {
-            let pid =id();
-            let stat = fs::read_to_string(format!("/proc/{}/stat", pid)).expect("Failed to read stat file");
+            let pid = id();
+            let stat = fs::read_to_string(format!("/proc/{}/stat", pid))
+                .expect("Failed to read stat file");
 
             let stats: Vec<&str> = stat.split_whitespace().collect();
             memory_usage = stats[23].parse::<u64>().expect("Failed to parse RSS");
         }
 
-        #[cfg(target_os="macos")]
+        #[cfg(target_os = "macos")]
         {
-            let output=Command::new("ps")
-            .arg("-p")
-            .arg(id().to_string())
-            .arg("-o")
-            .arg("rss=")
-            .output()
-            .expect("failed to execute process");
-    
-            memory_usage = String::from_utf8_lossy(&output.stdout)
-            .trim()
-            .parse::<u64>()
-            .expect("Failed to parse memory usage");
+            let output = Command::new("ps")
+                .arg("-p")
+                .arg(id().to_string())
+                .arg("-o")
+                .arg("rss=")
+                .output()
+                .expect("failed to execute process");
 
+            memory_usage = String::from_utf8_lossy(&output.stdout)
+                .trim()
+                .parse::<u64>()
+                .expect("Failed to parse memory usage");
         }
         breakdown.insert("RSS".to_string(), memory_usage);
 

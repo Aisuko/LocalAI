@@ -14,4 +14,14 @@ wgpu = ["burn/wgpu"]
 [dependencies]
 bunker = { path = "../bunker" }
 burn = { version="0.10.0", features=["ndarray","wgpu"] } # https://github.com/mudler/LocalAI/discussions/1219
-serde = "1.0.190"
+serde = {version = "1.0.171", features = ["std", "derive"]}
+num-traits = "0.2.15"
+hound = "3.5.0"
+npy = "0.4.0"
+cfg-if = "0.1"
+strum = "0.25.0"
+strum_macros = "0.25.0"
+tokenizers = {version = "0.13.3", default-features = false, features = [
+  "onig",
+  "http",
+]}

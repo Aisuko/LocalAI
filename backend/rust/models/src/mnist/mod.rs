@@ -7,7 +7,14 @@ pub(crate) mod mnist;
 pub type Backend = burn::backend::NdArrayBackend<f32>;
 
 impl LLM for mnist::MNINST<Backend> {
+    fn new(request: ModelOptions) -> Self {
+        let model = request.model_file;
+        let instance = mnist::MNINST::<Backend>::new(&model);
+        instance
+    }
+
     fn load_model(&mut self, request: ModelOptions) -> Result<String, Box<dyn std::error::Error>> {
+        // MNIST model is loaded in new()
         todo!("load model")
     }
 
